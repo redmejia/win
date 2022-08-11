@@ -81,7 +81,7 @@ const DevDocAPI = () => {
                                     <textarea className="form-control bg-dark text-success" id="exampleFormControlTextarea1" defaultValue={sample} onChange={e => setData(e.target.value)} rows="18" />
                                 </div>
                                 <hr></hr>
-                                <button className="btn btn-success" onClick={sent}>send</button>
+                                <button className="btn btn-success" onClick={sent}>Send</button>
                             </div>
                         </div>
                             <hr></hr>
