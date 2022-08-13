@@ -43,7 +43,7 @@ const RenderData = ({ data }) => {
 }
 
 const TableOrder = () => {
-    const [data, setData] = useState([])
+    const [data, setData] = useState(null)
 
     useEffect(() => {
         fetch("http://localhost:8081/api/env?company=0f56fb66-9e88-4a71-bd92-f9b6739195f4")
@@ -71,9 +71,13 @@ const TableOrder = () => {
                             </div>
                         </div>
                         <h2>Orders</h2>
-                        <div className="table-responsive">
-                            <RenderData data={data} />
-                        </div>
+                        {
+                        data === null? <p>not order yet</p>
+                            :
+                            <div className="table-responsive">
+                                <RenderData data={data} />
+                            </div>
+                        }
                     </main>
                 </div>
             </div>

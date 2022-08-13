@@ -8,7 +8,7 @@ import { useState } from "react";
 const DevDocAPI = () => {
     const dataSample = {
         company_uid: "0f56fb66-9e88-4a71-bd92-f9b6739195f4",
-        produc: {
+        product: {
             product_name: "Mazna",
             product_price: 2000
         },
@@ -34,11 +34,36 @@ const DevDocAPI = () => {
     const sampleResp = JSON.stringify(dataResponse, null, 4)
 
     const [data, setData] = useState(dataSample)
+    const [txResp, setTXResp] = useState({})
+    const [companyEnv, setEnv] = useState([])
 
     const sent = () => {
-        // alert(JSON.stringify(data))
-        console.log(data);
+        if (typeof data === 'string') {
+            let newData = JSON.parse(data)
+            fetch('http://localhost:8081/api/tx', {
+                method: "POST",
+                body: JSON.stringify(newData)
+            })
+                .then(resp => resp.json())
+                .then(respData => setTXResp(respData))
+        } else if (typeof data === 'object') {
+            // send default data  
+            fetch('http://localhost:8081/api/tx', {
+                method: "POST",
+                body: JSON.stringify(data)
+            }).then(resp => resp.json())
+                .then(respData => setTXResp(respData))
+        }
+
     }
+
+    const getAllDataEnv = () => {
+        fetch('http://localhost:8081/api/env?company=' + dataSample.company_uid, {
+            method: 'GET',
+        }).then(resp => resp.json())
+            .then(data => setEnv(data))
+    }
+
 
     return (
         <>
@@ -59,13 +84,17 @@ const DevDocAPI = () => {
                         </div>
                         <h2>Dev/API</h2>
                         <div className="row">
+
                             <div className="col">
+                                <h4>New transaction</h4>
                                 <h4>
                                     <span className="badge text-bg-success">POST</span> /api/tx
                                 </h4>
-                                <p>Meke transaction take a json request
-                                    <p><span className="fw-bold">NOTE:</span> product_name and tx_amount must have same value when your doing test.</p>
-                                </p>
+                                Meke transaction take a json request
+                                <p><span className="fw-bold">NOTE:</span> product_price and tx_amount must have same value when your doing test.</p>
+                                Test cards:
+                                <p>PASS/ACCEPTED : card num. "1111222233332064" | cv num. "146"</p>
+                                <p>PASS/DECLINED : card num. "2222333344442752" | cv num. "112"</p>
                                 <div className="form-group">
                                     <textarea readOnly className="form-control" id="exampleFormControlTextarea1" defaultValue={sample} rows="8" />
                                 </div>
@@ -80,11 +109,26 @@ const DevDocAPI = () => {
                                 <div className="form-group">
                                     <textarea className="form-control bg-dark text-success" id="exampleFormControlTextarea1" defaultValue={sample} onChange={e => setData(e.target.value)} rows="18" />
                                 </div>
+                                Response:
+                                <p>{JSON.stringify(txResp, null, 4)}</p>
                                 <hr></hr>
                                 <button className="btn btn-success" onClick={sent}>Send</button>
                             </div>
                         </div>
-                            <hr></hr>
+                        <hr></hr>
+                        <div className="row">
+                            <div className="col">
+                                <h4>Get all transaction envoices</h4>
+                                <h4>
+                                    <span className="badge text-bg-success">GET</span> /api/env?={dataSample.company_uid}
+                                </h4>
+                                You need the company uid. This will response an array of object containing envoices information
+                                <p></p>
+                                Response:
+                                <p>{companyEnv.length === 0 ? "" : JSON.stringify(companyEnv, null, 4)}</p>
+                                <button className="btn btn-success" onClick={getAllDataEnv}>GET ALL</button>
+                            </div>
+                        </div>
                     </main>
                 </div>
             </div>
