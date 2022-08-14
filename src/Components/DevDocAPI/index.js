@@ -2,9 +2,6 @@ import TopNav from "../TopNav";
 import LeftNav from "../LeftNav";
 import { useState } from "react";
 
-
-
-
 const DevDocAPI = () => {
     const dataSample = {
         company_uid: "0f56fb66-9e88-4a71-bd92-f9b6739195f4",
@@ -31,11 +28,12 @@ const DevDocAPI = () => {
     }
 
     const sample = JSON.stringify(dataSample, null, 4)
-    const sampleResp = JSON.stringify(dataResponse, null, 4)
 
-    const [data, setData] = useState(dataSample)
-    const [txResp, setTXResp] = useState({})
+    const [data, setData] = useState(sample)
+    const [txResp, setTXResp] = useState(null)
     const [companyEnv, setEnv] = useState([])
+    const [envoice, setEnvoiceUUID] = useState()
+    const [envoiveInfo, setEnvInfo] = useState(null)
 
     const sent = () => {
         if (typeof data === 'string') {
@@ -46,15 +44,14 @@ const DevDocAPI = () => {
             })
                 .then(resp => resp.json())
                 .then(respData => setTXResp(respData))
-        } else if (typeof data === 'object') {
-            // send default data  
-            fetch('http://localhost:8081/api/tx', {
-                method: "POST",
-                body: JSON.stringify(data)
-            }).then(resp => resp.json())
-                .then(respData => setTXResp(respData))
         }
+    }
 
+    const getEnvUID = () => {
+        fetch("http://localhost:8081/api/env/num?env_uid=" + envoice, {
+            method: "GET"
+        }).then(resp => resp.json())
+            .then(data => setEnvInfo(data))
     }
 
     const getAllDataEnv = () => {
@@ -96,23 +93,77 @@ const DevDocAPI = () => {
                                 <p>PASS/ACCEPTED : card num. "1111222233332064" | cv num. "146"</p>
                                 <p>PASS/DECLINED : card num. "2222333344442752" | cv num. "112"</p>
                                 <div className="form-group">
-                                    <textarea readOnly className="form-control" id="exampleFormControlTextarea1" defaultValue={sample} rows="8" />
+                                    <textarea 
+                                        readOnly 
+                                        className="form-control" 
+                                        id="exampleFormControlTextarea1" 
+                                        defaultValue={sample} 
+                                        rows="8" 
+                                    />
                                 </div>
                                 <hr></hr>
                                 <p>Expected Response ACCEPTED or DECLINED transaction</p>
                                 <div className="form-group">
-                                    <textarea readOnly className="form-control" id="exampleFormControlTextarea1" defaultValue={sampleResp} rows="7" />
+                                    <textarea 
+                                        readOnly 
+                                        className="form-control" 
+                                        id="exampleFormControlTextarea1" 
+                                        defaultValue={JSON.stringify(dataResponse, null, 4)} 
+                                        rows="7" 
+                                    />
                                 </div>
                             </div>
                             <div className="col">
                                 <h4>Test</h4>
                                 <div className="form-group">
-                                    <textarea className="form-control bg-dark text-success" id="exampleFormControlTextarea1" defaultValue={sample} onChange={e => setData(e.target.value)} rows="18" />
+                                    <textarea 
+                                        className="form-control bg-dark text-success" 
+                                        id="exampleFormControlTextarea1" 
+                                        defaultValue={sample} onChange={e => setData(e.target.value)} 
+                                        rows="18" 
+                                    />
                                 </div>
                                 Response:
-                                <p>{JSON.stringify(txResp, null, 4)}</p>
+                                <p>{txResp === null ? <></> : JSON.stringify(txResp, null, 4)}</p>
                                 <hr></hr>
                                 <button className="btn btn-success" onClick={sent}>Send</button>
+                            </div>
+                        </div>
+
+                        <hr></hr>
+                        <div className="row">
+                            <div className="col">
+                                <h4>Get one envoice</h4>
+                                <h4>
+                                    <span className="badge text-bg-success">GET</span> /api/env/num?env_uid=
+                                </h4>
+                                Get a single envoice require envoice uid. You can creante new order or transaction and test from the response or test from the Orders Tab navigation.
+                            </div>
+                            <div className="col">
+                                <h4>Test</h4>
+                                <div className="input-group mb-3">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text" id="inputGroup-sizing-default">env_uid=</span>
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        className="bg-dark text-success form-control" 
+                                        aria-label="Default" 
+                                        onChange={e => setEnvoiceUUID(e.target.value)} 
+                                        aria-describedby="inputGroup-sizing-default"
+                                    />
+                                </div>
+                                {envoiveInfo === null ? <p></p> :
+                                    <div className="form-group">
+                                        <textarea 
+                                            className="mb-2 form-control bg-dark text-success" 
+                                            id="exampleFormControlTextarea1" 
+                                            defaultValue={JSON.stringify(envoiveInfo, null, 4)} 
+                                            rows="28" 
+                                        />
+                                    </div>
+                                }
+                                <button className="btn btn-success" onClick={getEnvUID}>Send</button>
                             </div>
                         </div>
                         <hr></hr>
@@ -125,10 +176,21 @@ const DevDocAPI = () => {
                                 You need the company uid. This will response an array of object containing envoices information
                                 <p></p>
                                 Response:
-                                <p>{companyEnv.length === 0 ? "" : JSON.stringify(companyEnv, null, 4)}</p>
+                                {
+                                    companyEnv.length === 0 ? <p className="mt-4"></p> :
+                                        <div className="form-group">
+                                            <textarea 
+                                                className="mb-2 form-control bg-dark text-success" 
+                                                id="exampleFormControlTextarea1" 
+                                                defaultValue={JSON.stringify(companyEnv, null, 4)} 
+                                                rows="28" 
+                                            />
+                                        </div>
+                                }
                                 <button className="btn btn-success" onClick={getAllDataEnv}>GET ALL</button>
                             </div>
                         </div>
+
                     </main>
                 </div>
             </div>
