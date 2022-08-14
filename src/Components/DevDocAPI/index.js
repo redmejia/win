@@ -46,12 +46,17 @@ const DevDocAPI = () => {
                 .then(respData => setTXResp(respData))
         }
     }
+   
 
     const getEnvUID = () => {
         fetch("http://localhost:8081/api/env/num?env_uid=" + envoice, {
             method: "GET"
         }).then(resp => resp.json())
             .then(data => setEnvInfo(data))
+    }
+
+    const cleanResponse = () =>{
+        setEnvInfo(null)
     }
 
     const getAllDataEnv = () => {
@@ -93,43 +98,53 @@ const DevDocAPI = () => {
                                 <p>PASS/ACCEPTED : card num. "1111222233332064" | cv num. "146"</p>
                                 <p>PASS/DECLINED : card num. "2222333344442752" | cv num. "112"</p>
                                 <div className="form-group">
-                                    <textarea 
-                                        readOnly 
-                                        className="form-control" 
-                                        id="exampleFormControlTextarea1" 
-                                        defaultValue={sample} 
-                                        rows="8" 
+                                    <textarea
+                                        readOnly
+                                        className="form-control"
+                                        id="exampleFormControlTextarea1"
+                                        defaultValue={sample}
+                                        rows="8"
                                     />
                                 </div>
                                 <hr></hr>
-                                <p>Expected Response ACCEPTED or DECLINED transaction</p>
+                                <p>Example Response ACCEPTED or DECLINED transaction</p>
                                 <div className="form-group">
-                                    <textarea 
-                                        readOnly 
-                                        className="form-control" 
-                                        id="exampleFormControlTextarea1" 
-                                        defaultValue={JSON.stringify(dataResponse, null, 4)} 
-                                        rows="7" 
+                                    <textarea
+                                        readOnly
+                                        className="form-control"
+                                        id="exampleFormControlTextarea1"
+                                        defaultValue={JSON.stringify(dataResponse, null, 4)}
+                                        rows="7"
                                     />
                                 </div>
                             </div>
                             <div className="col">
                                 <h4>Test</h4>
                                 <div className="form-group">
-                                    <textarea 
-                                        className="form-control bg-dark text-success" 
-                                        id="exampleFormControlTextarea1" 
-                                        defaultValue={sample} onChange={e => setData(e.target.value)} 
-                                        rows="18" 
+                                    <textarea
+                                        className="form-control bg-dark text-success"
+                                        id="exampleFormControlTextarea1"
+                                        defaultValue={sample} onChange={e => setData(e.target.value)}
+                                        rows="18"
                                     />
                                 </div>
-                                Response:
-                                <p>{txResp === null ? <></> : JSON.stringify(txResp, null, 4)}</p>
                                 <hr></hr>
                                 <button className="btn btn-success" onClick={sent}>Send</button>
+                                {
+                                    txResp === null ? <></> :
+                                        <div className="form-group">
+                                            Response:
+                                            <textarea
+                                                readOnly
+                                                className="bg-dark text-success form-control"
+                                                id="exampleFormControlTextarea1"
+                                                defaultValue={JSON.stringify(txResp, null, 4)}
+                                                rows="7"
+                                            />
+                                        </div>
+                                }
                             </div>
                         </div>
-
                         <hr></hr>
                         <div className="row">
                             <div className="col">
@@ -145,25 +160,28 @@ const DevDocAPI = () => {
                                     <div className="input-group-prepend">
                                         <span className="input-group-text" id="inputGroup-sizing-default">env_uid=</span>
                                     </div>
-                                    <input 
-                                        type="text" 
-                                        className="bg-dark text-success form-control" 
-                                        aria-label="Default" 
-                                        onChange={e => setEnvoiceUUID(e.target.value)} 
+                                    <input
+                                        type="text"
+                                        className="bg-dark text-success form-control"
+                                        aria-label="Default"
+                                        onChange={e => setEnvoiceUUID(e.target.value)}
                                         aria-describedby="inputGroup-sizing-default"
                                     />
                                 </div>
+                                <hr></hr>
+                                <button className="btn btn-success" onClick={getEnvUID}>Send</button>
+                                <button className="btn btn-warning" onClick={cleanResponse}>Clean Response</button>
                                 {envoiveInfo === null ? <p></p> :
                                     <div className="form-group">
-                                        <textarea 
-                                            className="mb-2 form-control bg-dark text-success" 
-                                            id="exampleFormControlTextarea1" 
-                                            defaultValue={JSON.stringify(envoiveInfo, null, 4)} 
-                                            rows="28" 
+                                        Response:
+                                        <textarea
+                                            className="mb-2 form-control bg-dark text-success"
+                                            id="exampleFormControlTextarea1"
+                                            defaultValue={JSON.stringify(envoiveInfo, null, 4)}
+                                            rows="28"
                                         />
                                     </div>
                                 }
-                                <button className="btn btn-success" onClick={getEnvUID}>Send</button>
                             </div>
                         </div>
                         <hr></hr>
@@ -174,20 +192,23 @@ const DevDocAPI = () => {
                                     <span className="badge text-bg-success">GET</span> /api/env?={dataSample.company_uid}
                                 </h4>
                                 You need the company uid. This will response an array of object containing envoices information
-                                <p></p>
-                                Response:
+
+                            </div>
+                            <div className="col">
+                                <button className="btn btn-success" onClick={getAllDataEnv}>Send</button>
+                                <hr></hr>
                                 {
                                     companyEnv.length === 0 ? <p className="mt-4"></p> :
                                         <div className="form-group">
-                                            <textarea 
-                                                className="mb-2 form-control bg-dark text-success" 
-                                                id="exampleFormControlTextarea1" 
-                                                defaultValue={JSON.stringify(companyEnv, null, 4)} 
-                                                rows="28" 
+                                            Response:
+                                            <textarea
+                                                className="mb-2 form-control bg-dark text-success"
+                                                id="exampleFormControlTextarea1"
+                                                defaultValue={JSON.stringify(companyEnv, null, 4)}
+                                                rows="28"
                                             />
                                         </div>
                                 }
-                                <button className="btn btn-success" onClick={getAllDataEnv}>GET ALL</button>
                             </div>
                         </div>
 
