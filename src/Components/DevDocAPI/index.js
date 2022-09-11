@@ -94,6 +94,8 @@ const DevDocAPI = () => {
                                 </h4>
                                 Meke transaction take a json request
                                 <p><span className="fw-bold">NOTE:</span> product_price and tx_amount must have same value when your doing test.</p>
+                                Test company uuid : 0f56fb66-9e88-4a71-bd92-f9b6739195f4
+                                <p></p>	
                                 Test cards:
                                 <p>PASS/ACCEPTED : card num. "1111222233332064" | cv num. "146"</p>
                                 <p>PASS/DECLINED : card num. "2222333344442752" | cv num. "112"</p>
