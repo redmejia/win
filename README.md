@@ -1,5 +1,7 @@
 # Win pay
 ## Win is a payment processor for porfolio project.
+# Win pay microservice diagram
+![microservices_diagram](https://user-images.githubusercontent.com/51460153/189556174-5a311276-598c-4732-a280-f522ca84683a.png)
 ### Services links
 [win controller](https://github.com/redmejia/win-controler-service) service.\
 [win authorization](https://github.com/redmejia/win-auth-service) service.\
